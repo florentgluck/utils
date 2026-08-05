@@ -9,6 +9,7 @@ usage() {
 	echo "An optional quality parameter (default: $quality) ranging from 0 to 51 can" >&2
 	echo "be specified, where 0 means lossless and 51 the worst quality possible." >&2
 	echo "The generated output files will be postfixed with \"-h265\"" >&2
+	echo "The audio is converted to 2-channel AAC and the datastream removed." >&2
 	exit 1
 }
 
@@ -58,5 +59,5 @@ for f in "${files[@]}"; do
 	# To scale the resolution to 1920x1080: "-s 1920x1080" 
 	# To crop the video to a specific area: -vf "crop = 1280:545:0:88"
 
-    ffmpeg -i "$f" -map 0 -c:a copy -c:s copy -c:v libx265 -preset medium -crf $quality -threads $cpus "$output"
+    ffmpeg -i "$f" -c:a aac -b:a 192k -dn -c:v libx265 -preset medium -crf $quality -threads $cpus "$output"
 done
